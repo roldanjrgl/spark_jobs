@@ -1,0 +1,5 @@
+var map = sc.textFile("testInput/input.txt").flatMap(line => line.split(" ")).map(word => (word,1));
+
+var counts = map.reduceByKey(_ + _);
+
+counts.collect().foreach(println)
