@@ -27,7 +27,7 @@ public class PCA {
         JavaRDD<String> words = matrix.flatMap(new FlatMapFunction<String, String>() {
             @Override
             public Iterator<String> call(String s) {
-                return Arrays.stream(s.split(" ")).iterator();
+                return Arrays.stream(s.split(",")).iterator();
             }
         });
 
