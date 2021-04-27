@@ -7,6 +7,8 @@ import org.apache.spark.SparkContext;
 
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.mllib.linalg.Vectors;
+import org.apache.spark.mllib.linalg.Vector;
 //import org.apache.spark.mllib.linalg.Matrix;
 //import org.apache.spark.mllib.linalg.Vector;
 //import org.apache.spark.mllib.linalg.Vectors;
@@ -23,7 +25,26 @@ public class PCA {
         JavaSparkContext jsc = JavaSparkContext.fromSparkContext(sc);
 
         JavaRDD<String> matrix = jsc.textFile(args[0], 1);
+
         
+        JavaRDD<Vector> parsedData = matrix.map(s -> {
+        	  String[] sarray = s.trim().split(" ");
+        	  double[] values = new double[sarray.length];
+        	  for (int i = 0; i < sarray.length; i++) {
+        	    values[i] = Double.parseDouble(sarray[i]);
+        	  }
+        	  return Vectors.dense(values);
+        });
+
+        List<Vector> testing = parsedData.collect(); 
+        System.out.print("Printing test:");
+        for (Vector test: testing ) {
+        	System.out.println(test + " ");
+        }
+        
+    
+
+        /*
         JavaRDD<String> words = matrix.flatMap(new FlatMapFunction<String, String>() {
             @Override
             public Iterator<String> call(String s) {
