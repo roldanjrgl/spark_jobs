@@ -25,8 +25,22 @@ public class PCA {
         JavaSparkContext jsc = JavaSparkContext.fromSparkContext(sc);
 
         JavaRDD<String> matrix = jsc.textFile(args[0], 1);
-
         
+        
+        JavaRDD<String> rows = matrix.flatMap(new FlatMapFunction<String, String>() {
+            @Override
+            public Iterator<String> call(String s) {
+                return Arrays.stream(s.split(",")).iterator();
+            }
+        });
+        
+        
+        // print matrix
+        for (String row : rows.collect()){
+        	System.out.println("row: " + row);
+        }
+
+        /*
         JavaRDD<Vector> parsedData = matrix.map(s -> {
         	  String[] sarray = s.trim().split(" ");
         	  double[] values = new double[sarray.length];
@@ -36,11 +50,15 @@ public class PCA {
         	  return Vectors.dense(values);
         });
 
+//        List<Vector> testing = parsedData.collect(); 
         List<Vector> testing = parsedData.collect(); 
         System.out.print("Printing test:");
         for (Vector test: testing ) {
         	System.out.println(test + " ");
         }
+        */
+        
+        
         
     
 
