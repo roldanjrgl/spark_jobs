@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Iterator;
@@ -10,10 +11,10 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.mllib.linalg.Vector;
-//import org.apache.spark.mllib.linalg.Matrix;
-//import org.apache.spark.mllib.linalg.Vector;
-//import org.apache.spark.mllib.linalg.Vectors;
-//import org.apache.spark.mllib.linalg.distributed.RowMatrix;
+import org.apache.spark.mllib.linalg.Matrix;
+import org.apache.spark.mllib.linalg.Vector;
+import org.apache.spark.mllib.linalg.Vectors;
+import org.apache.spark.mllib.linalg.distributed.RowMatrix;
 
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
@@ -74,6 +75,38 @@ public class PCA {
         	System.out.println("");
         }
         System.out.println("######################################################");
+
+        List<double[]> rowsDoublesCollected = rowsDoubles.collect();
+        
+//        List<Vector> data = Arrays.asList();
+        List<Vector> data = new ArrayList<Vector>();
+//        List<Vector> data = new List<Vector>();
+        for (double[] rowDoubleCollected: rowsDoublesCollected) {
+        	Vector dv = Vectors.dense(rowDoubleCollected);
+//        	data.add(Vectors.dense(rowDoubleCollected));
+        	data.add(dv);
+        }
+        
+        JavaRDD<Vector> rowsMatrix = jsc.parallelize(data);
+
+        // Create a RowMatrix from JavaRDD<Vector>.
+        RowMatrix mat = new RowMatrix(rowsMatrix.rdd());
+
+        // Compute the top 4 principal components.
+        // Principal components are stored in a local dense matrix.
+        Matrix pc = mat.computePrincipalComponents(4);
+
+        // Project the rows to the linear space spanned by the top 4 principal
+        // components.
+        RowMatrix projected = mat.multiply(pc);
+        
+        Vector[] collectPartitions = (Vector[]) projected.rows().collect();
+        System.out.println("Projected vector of principal component:");
+        for (Vector vector : collectPartitions) {
+            System.out.println("\t" + vector);
+        }
+        
+        
 
         jsc.stop();
     }
