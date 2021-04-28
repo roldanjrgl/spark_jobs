@@ -1,7 +1,7 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Iterator;
+//import java.util.ArrayList;
+//import java.util.Arrays;
+//import java.util.List;
+//import java.util.Iterator;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
@@ -9,16 +9,18 @@ import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.Vectors;
-import org.apache.spark.mllib.linalg.Vector;
-import org.apache.spark.mllib.linalg.Matrix;
-import org.apache.spark.mllib.linalg.Vector;
-import org.apache.spark.mllib.linalg.Vectors;
-import org.apache.spark.mllib.linalg.distributed.RowMatrix;
+//import org.apache.spark.mllib.linalg.Vector;
+//import org.apache.spark.mllib.linalg.Matrix;
+//import org.apache.spark.mllib.linalg.Vector;
+//import org.apache.spark.mllib.linalg.Vectors;
+//import org.apache.spark.mllib.linalg.distributed.RowMatrix;
 import org.apache.spark.mllib.regression.LabeledPoint;
+import org.apache.spark.mllib.feature.ChiSqSelector;
+import org.apache.spark.mllib.feature.ChiSqSelectorModel;
 
-import org.apache.spark.api.java.*;
+//import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
-import scala.Tuple2;
+//import scala.Tuple2;
 
 
 public class FeatureSelection {
@@ -36,9 +38,6 @@ public class FeatureSelection {
         	public LabeledPoint call(String row) {
         		String[] attributes = row.split(",");
         		Double label;
-//        		if (attributes[attributes.length - 1] == "setosa") label = 0.0; 
-//        		else if (attributes[attributes.length - 1] == "versicolor") label = 1.0; 
-//        		else if (attributes[attributes.length - 1] == "virginica") label = 2.0; 
         		if (attributes[attributes.length - 1].contains("setosa")) label = 0.0; 
         		else if (attributes[attributes.length - 1].contains("versicolor")) label = 1.0; 
         		else if (attributes[attributes.length - 1].contains("virginica")) label = 2.0; 
@@ -51,7 +50,7 @@ public class FeatureSelection {
         });
         
         System.out.println("######################################################");
-        System.out.println("Printing JavaRDD<LabeledPoint> rows:");
+        System.out.println("Printing JavaRDD<LabeledPoint> rowProcessed:");
         System.out.println("------------------------------------------------------");
         // print matrix
         for (LabeledPoint rowProcessed : processedData.collect()){
@@ -60,5 +59,20 @@ public class FeatureSelection {
         System.out.println("######################################################");
 
         
+        ChiSqSelector selector = new ChiSqSelector(3);
+        
+        ChiSqSelectorModel transformer = selector.fit(processedData.rdd());
+
+        JavaRDD<LabeledPoint> filteredData = processedData.map(lp ->
+        	new LabeledPoint(lp.label(), transformer.transform(lp.features())));
+       
+        System.out.println("######################################################");
+        System.out.println("Printing JavaRDD<LabeledPoint> filtedData:");
+        System.out.println("------------------------------------------------------");
+        // print matrix
+        for (LabeledPoint rowFiltered : filteredData.collect()){
+        	System.out.println("rowProcessed: " + rowFiltered);
+        }
+        System.out.println("######################################################");
     }
 }
