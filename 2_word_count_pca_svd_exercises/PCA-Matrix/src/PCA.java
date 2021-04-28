@@ -1,6 +1,7 @@
 import java.util.Arrays;
 import java.util.List;
 import java.util.Iterator;
+//import java.util.Vector;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
@@ -36,9 +37,38 @@ public class PCA {
         
         
         // print matrix
+        System.out.println("Values of matrix:");
         for (String row : rows.collect()){
         	System.out.println("row: " + row);
         }
+        
+//        JavaRDD<Double> rowsDouble = rows.map(new FlatMapFunction<String, Double>() {
+//        	@Override
+//        	public iterator<Double> call(String s) {
+//        		return Double.parseDouble(s);
+//        	}
+//        }
+       
+        // reference: https://stackoverflow.com/questions/31834825/iterate-through-a-java-rdd-by-row
+        JavaRDD <double[]> rowsDoubles = rows.map(new Function<String, double[]>(){
+        	@Override
+        	public double[] call(String row){
+//        		String rowSplitted = row.split("\\t");
+        		double[] rowDouble = new double[row.length()];
+        		for (int i = 0; i < row.length(); ++i) {
+        			rowDouble[i] = (double) Double.parseDouble(row);
+        		}
+        		return rowDouble;
+        	}
+        });
+        
+        List<double[]> listDouble = rowsDoubles.collect();
+        System.out.print("Printing test:");
+        for (double[] test: listDouble) {
+        	System.out.println(test);
+        }
+        
+        
 
         /*
         JavaRDD<Vector> parsedData = matrix.map(s -> {
