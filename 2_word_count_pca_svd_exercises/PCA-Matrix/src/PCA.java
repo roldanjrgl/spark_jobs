@@ -62,18 +62,26 @@ public class PCA {
         	}
         });
         
-        List<double[]> listDouble = rowsDoubles.collect();
+//        List<double[]> listDoubleRows = rowsDoubles.collect();
 
         
-        System.out.print("Printing test:");
-        for (double[] test: listDouble) {
-//        	System.out.println(test);
-        	for (int i = 0; i < test.length; i++) {
-        		System.out.print(test[i]);
-        	}
-        	System.out.print("");
-        }
+        System.out.println("######################################################");
+        System.out.println("Printing matrix:");
+        System.out.println("######################################################");
+        // attempt to print_1
+//        for (double[] test: listDouble) {
+////        	System.out.println(test);
+//        	for (int i = 0; i < test.length; i++) {
+//        		System.out.print(test[i] + " ");
+//        	}
+//        	System.out.println("");
+//        }
         
+        // attempt to print_2
+//        System.out.println("Values of matrix:");
+        for (double[] rowDoubles : rowsDoubles.collect()){
+        	System.out.println("row: " + rowDoubles[0]);
+        }
 
         /*
         JavaRDD<Vector> parsedData = matrix.map(s -> {
