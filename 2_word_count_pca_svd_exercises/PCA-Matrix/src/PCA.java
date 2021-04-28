@@ -38,7 +38,7 @@ public class PCA {
         
         System.out.println("######################################################");
         System.out.println("Printing JavaRDD<String> rows:");
-        System.out.println("######################################################");
+        System.out.println("------------------------------------------------------");
         // print matrix
         for (String row : rows.collect()){
         	System.out.println("row: " + row);
@@ -56,10 +56,11 @@ public class PCA {
         		return rowDouble;
         	}
         });
+        System.out.println("######################################################");
         
         System.out.println("######################################################");
         System.out.println("Printing info:");
-        System.out.println("######################################################");
+        System.out.println("------------------------------------------------------");
         System.out.println("rowsDoublesCount = " + rowsDoubles.count());
         System.out.println("######################################################");
 //        List<double[]> listDoubleRows = rowsDoubles.collect();
@@ -67,7 +68,7 @@ public class PCA {
         
         System.out.println("######################################################");
         System.out.println("Printing matrix:");
-        System.out.println("######################################################");
+        System.out.println("------------------------------------------------------");
         // attempt to print_1
 //        for (double[] test: listDouble) {
 ////        	System.out.println(test);
@@ -80,7 +81,10 @@ public class PCA {
         // attempt to print_2
 //        System.out.println("Values of matrix:");
         for (double[] rowDoubles : rowsDoubles.collect()){
-        	System.out.println("row: " + rowDoubles[0]);
+        	System.out.println("row: " + rowDoubles);
+        	for (int i = 0; i < rowDoubles.length; i++) {
+        		System.out.println(rowDoubles[i] + " ");
+        	}
         }
         System.out.println("######################################################");
 
