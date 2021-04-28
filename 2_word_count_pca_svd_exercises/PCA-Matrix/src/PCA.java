@@ -63,28 +63,15 @@ public class PCA {
         System.out.println("------------------------------------------------------");
         System.out.println("rowsDoublesCount = " + rowsDoubles.count());
         System.out.println("######################################################");
-//        List<double[]> listDoubleRows = rowsDoubles.collect();
 
-        
         System.out.println("######################################################");
         System.out.println("Printing matrix:");
         System.out.println("------------------------------------------------------");
-        // attempt to print_1
-//        for (double[] test: listDouble) {
-////        	System.out.println(test);
-//        	for (int i = 0; i < test.length; i++) {
-//        		System.out.print(test[i] + " ");
-//        	}
-//        	System.out.println("");
-//        }
-        
-        // attempt to print_2
-//        System.out.println("Values of matrix:");
         for (double[] rowDoubles : rowsDoubles.collect()){
-        	System.out.println("row: " + rowDoubles);
         	for (int i = 0; i < rowDoubles.length; i++) {
-        		System.out.println(rowDoubles[i] + " ");
+        		System.out.print(rowDoubles[i] + " ");
         	}
+        	System.out.println("");
         }
         System.out.println("######################################################");
 
