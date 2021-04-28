@@ -37,6 +37,7 @@ public class PCA {
         });
         
         
+        /*
         System.out.println("######################################################");
         System.out.println("Printing JavaRDD<String> rows:");
         System.out.println("------------------------------------------------------");
@@ -44,6 +45,9 @@ public class PCA {
         for (String row : rows.collect()){
         	System.out.println("row: " + row);
         }
+        System.out.println("######################################################");
+        */
+       
         
         // reference: https://stackoverflow.com/questions/31834825/iterate-through-a-java-rdd-by-row
         JavaRDD <double[]> rowsDoubles = rows.map(new Function<String, double[]>(){
@@ -57,14 +61,14 @@ public class PCA {
         		return rowDouble;
         	}
         });
-        System.out.println("######################################################");
         
         System.out.println("######################################################");
         System.out.println("Printing info:");
         System.out.println("------------------------------------------------------");
         System.out.println("rowsDoublesCount = " + rowsDoubles.count());
         System.out.println("######################################################");
-
+        
+        /*
         System.out.println("######################################################");
         System.out.println("Printing matrix:");
         System.out.println("------------------------------------------------------");
@@ -75,6 +79,7 @@ public class PCA {
         	System.out.println("");
         }
         System.out.println("######################################################");
+		*/
 
         List<double[]> rowsDoublesCollected = rowsDoubles.collect();
         
@@ -101,10 +106,14 @@ public class PCA {
         RowMatrix projected = mat.multiply(pc);
         
         Vector[] collectPartitions = (Vector[]) projected.rows().collect();
+
+        System.out.println("######################################################");
         System.out.println("Projected vector of principal component:");
+        System.out.println("------------------------------------------------------");
         for (Vector vector : collectPartitions) {
             System.out.println("\t" + vector);
         }
+        System.out.println("######################################################");
         
         
 
