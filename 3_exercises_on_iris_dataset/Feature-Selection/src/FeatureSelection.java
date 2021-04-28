@@ -47,6 +47,15 @@ public class FeatureSelection {
         	}
         });
         
+        System.out.println("######################################################");
+        System.out.println("Printing JavaRDD<String> rows:");
+        System.out.println("------------------------------------------------------");
+        // print matrix
+        for (LabeledPoint rowProcessed : processedData.collect()){
+        	System.out.println("rowProcessed: " + rowProcessed);
+        }
+        System.out.println("######################################################");
+
         
     }
 }
