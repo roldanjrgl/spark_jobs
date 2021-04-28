@@ -37,10 +37,10 @@ public class PCA {
         
         
         // print matrix
-        System.out.println("Values of matrix:");
-        for (String row : rows.collect()){
-        	System.out.println("row: " + row);
-        }
+//        System.out.println("Values of matrix:");
+//        for (String row : rows.collect()){
+//        	System.out.println("row: " + row);
+//        }
         
 //        JavaRDD<Double> rowsDouble = rows.map(new FlatMapFunction<String, Double>() {
 //        	@Override
@@ -63,11 +63,16 @@ public class PCA {
         });
         
         List<double[]> listDouble = rowsDoubles.collect();
+
+        
         System.out.print("Printing test:");
         for (double[] test: listDouble) {
-        	System.out.println(test);
+//        	System.out.println(test);
+        	for (int i = 0; i < test.length; i++) {
+        		System.out.print(test[i]);
+        	}
+        	System.out.print("");
         }
-        
         
 
         /*
