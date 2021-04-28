@@ -15,10 +15,13 @@ import org.apache.spark.mllib.linalg.Matrix;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.mllib.linalg.distributed.RowMatrix;
-
+import org.apache.spark.mllib.regression.LabeledPoint;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
 import scala.Tuple2;
+
+import org.apache.spark.mllib.clustering.KMeans;
+import org.apache.spark.mllib.clustering.KMeansModel;
 
 public class UnsupervisedLearning {
     public static void main(String[] args) {
@@ -26,7 +29,24 @@ public class UnsupervisedLearning {
         SparkContext sc = new SparkContext(conf);
         JavaSparkContext jsc = JavaSparkContext.fromSparkContext(sc);
 
-        JavaRDD<String> matrix = jsc.textFile(args[0], 1);
+        JavaRDD<String> data = jsc.textFile(args[0], 1);
+
+        JavaRDD<Vector> parsedData = data.map(s -> {
+        	  String[] sarray = s.split(",");
+        	  double[] values = new double[sarray.length];
+        	  for (int i = 0; i < sarray.length; i++) {
+        	    values[i] = Double.parseDouble(sarray[i]);
+        	  }
+        	  return Vectors.dense(values);
+        });
+
+        System.out.println("######################################################");
+        System.out.println("Printing JavaRDD<Vector> parseData:");
+        System.out.println("------------------------------------------------------");
+        for (Vector rowFiltered : parsedData.collect()){
+        	System.out.println("rowProcessed: " + rowFiltered);
+        }
+        System.out.println("######################################################");
         
     }
 }
