@@ -36,21 +36,22 @@ public class PCA {
         });
         
         
+        System.out.println("######################################################");
+        System.out.println("Printing JavaRDD<String> rows:");
+        System.out.println("######################################################");
         // print matrix
-        System.out.println("Values of matrix:");
         for (String row : rows.collect()){
         	System.out.println("row: " + row);
         }
         
-        /*
         // reference: https://stackoverflow.com/questions/31834825/iterate-through-a-java-rdd-by-row
         JavaRDD <double[]> rowsDoubles = rows.map(new Function<String, double[]>(){
         	@Override
         	public double[] call(String row){
-//        		String rowSplitted = row.split("\\t");
-        		double[] rowDouble = new double[row.length()];
-        		for (int i = 0; i < row.length(); ++i) {
-        			rowDouble[i] = (double) Double.parseDouble(row);
+        		String[] rowSplitted = row.split(",");
+        		double[] rowDouble = new double[rowSplitted.length];
+        		for (int i = 0; i < rowSplitted.length; ++i) {
+        			rowDouble[i] = (double) Double.parseDouble(rowSplitted[i]);
         		}
         		return rowDouble;
         	}
@@ -83,7 +84,6 @@ public class PCA {
         }
         System.out.println("######################################################");
 
-        */
         jsc.stop();
     }
 }
