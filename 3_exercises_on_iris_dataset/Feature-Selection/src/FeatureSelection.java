@@ -36,9 +36,12 @@ public class FeatureSelection {
         	public LabeledPoint call(String row) {
         		String[] attributes = row.split(",");
         		Double label;
-        		if (attributes[4] == "setosa") label = 0.0; 
-        		if (attributes[4] == "versicolor") label = 1.0; 
-        		if (attributes[4] == "virginica") label = 2.0; 
+//        		if (attributes[attributes.length - 1] == "setosa") label = 0.0; 
+//        		else if (attributes[attributes.length - 1] == "versicolor") label = 1.0; 
+//        		else if (attributes[attributes.length - 1] == "virginica") label = 2.0; 
+        		if (attributes[attributes.length - 1].contains("setosa")) label = 0.0; 
+        		else if (attributes[attributes.length - 1].contains("versicolor")) label = 1.0; 
+        		else if (attributes[attributes.length - 1].contains("virginica")) label = 2.0; 
         		else label = 0.0;
         		return new LabeledPoint(label, Vectors.dense(Double.parseDouble(attributes[0]), 
         													 Double.parseDouble(attributes[1]), 
@@ -48,7 +51,7 @@ public class FeatureSelection {
         });
         
         System.out.println("######################################################");
-        System.out.println("Printing JavaRDD<String> rows:");
+        System.out.println("Printing JavaRDD<LabeledPoint> rows:");
         System.out.println("------------------------------------------------------");
         // print matrix
         for (LabeledPoint rowProcessed : processedData.collect()){
