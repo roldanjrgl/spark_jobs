@@ -78,6 +78,8 @@ public class SupervisedLearning {
         JavaPairRDD<Object, Object> predictionAndLabels = test.mapToPair(p ->
           new Tuple2<>(model.predict(p.features()), p.label()));
 
+        predictionAndLabels.saveAsTextFile("logistic_regression_result.txt");
+        
         // Get evaluation metrics.
         MulticlassMetrics metrics = new MulticlassMetrics(predictionAndLabels.rdd());
         double accuracy = metrics.accuracy();
