@@ -7,6 +7,7 @@ import java.util.Iterator;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 
+
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.Vectors;
@@ -18,7 +19,11 @@ import org.apache.spark.mllib.linalg.distributed.RowMatrix;
 import org.apache.spark.mllib.regression.LabeledPoint;
 import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
+import org.apache.spark.api.java.JavaPairRDD;
 import scala.Tuple2;
+
+import org.apache.spark.mllib.regression.LinearRegressionModel;
+import org.apache.spark.mllib.regression.LinearRegressionWithSGD;
 
 
 public class SupervisedLearning {
@@ -44,6 +49,7 @@ public class SupervisedLearning {
         													 Double.parseDouble(attributes[3])));
         	}
         });
+        processedData.cache();
         
         System.out.println("######################################################");
         System.out.println("Printing JavaRDD<LabeledPoint> rowProcessed:");
@@ -55,5 +61,8 @@ public class SupervisedLearning {
         System.out.println("######################################################");
 
         
+
+        
+
     }
 }
