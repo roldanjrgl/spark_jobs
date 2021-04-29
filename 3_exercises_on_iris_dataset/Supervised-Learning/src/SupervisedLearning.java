@@ -22,9 +22,6 @@ import org.apache.spark.api.java.function.*;
 import org.apache.spark.api.java.JavaPairRDD;
 import scala.Tuple2;
 
-import org.apache.spark.mllib.regression.LinearRegressionModel;
-import org.apache.spark.mllib.regression.LinearRegressionWithSGD;
-
 
 public class SupervisedLearning {
     public static void main(String[] args) {
@@ -61,8 +58,9 @@ public class SupervisedLearning {
         System.out.println("######################################################");
 
         
-
         
+        
+
 
     }
 }
