@@ -67,16 +67,22 @@ public class UnsupervisedLearning {
         double WSSSE = clusters.computeCost(parsedData.rdd());
         System.out.println("Within Set Sum of Squared Errors = " + WSSSE);
 
-        
-        JavaRDD<Integer> predictedClasses = clusters.predict(parsedData);
+
+//        JavaRDD<Integer> predictedClasses = clusters.predict(parsedData);
+//        System.out.println("######################################################");
+//        System.out.println("Printing JavaRDD<Integer> predictedClass:");
+//        System.out.println("------------------------------------------------------");
+//        for (Integer predictedClass : predictedClasses.collect()){
+//        	System.out.println("rowProcessed: " + predictedClass);
+//        }
+//        System.out.println("######################################################");
+
         System.out.println("######################################################");
-        System.out.println("Printing JavaRDD<Integer> predictedClass:");
+        System.out.println("Printing Vector:PredictedClass");
         System.out.println("------------------------------------------------------");
-        for (Integer predictedClass : predictedClasses.collect()){
-        	System.out.println("rowProcessed: " + predictedClass);
+        for (Vector rowFiltered : parsedData.collect()){
+        	System.out.println(rowFiltered + ":"  + clusters.predict(rowFiltered));
         }
         System.out.println("######################################################");
-        
-        
     }
 }
