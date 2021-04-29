@@ -1,33 +1,36 @@
-//import java.util.ArrayList;
-//import java.util.Arrays;
-//import java.util.List;
-//import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Iterator;
+//import java.util.Vector;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 
+
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.Vectors;
-//import org.apache.spark.mllib.linalg.Vector;
-//import org.apache.spark.mllib.linalg.Matrix;
-//import org.apache.spark.mllib.linalg.Vector;
-//import org.apache.spark.mllib.linalg.Vectors;
-//import org.apache.spark.mllib.linalg.distributed.RowMatrix;
+import org.apache.spark.mllib.linalg.Vector;
+import org.apache.spark.mllib.linalg.Matrix;
+import org.apache.spark.mllib.linalg.Vector;
+import org.apache.spark.mllib.linalg.Vectors;
+import org.apache.spark.mllib.linalg.distributed.RowMatrix;
 import org.apache.spark.mllib.regression.LabeledPoint;
-import org.apache.spark.mllib.feature.ChiSqSelector;
-import org.apache.spark.mllib.feature.ChiSqSelectorModel;
-
-//import org.apache.spark.api.java.*;
+import org.apache.spark.api.java.*;
 import org.apache.spark.api.java.function.*;
-//import scala.Tuple2;
+import org.apache.spark.api.java.JavaPairRDD;
+import scala.Tuple2;
+
+import org.apache.spark.mllib.classification.LogisticRegressionModel;
+import org.apache.spark.mllib.classification.LogisticRegressionWithLBFGS;
+import org.apache.spark.mllib.evaluation.MulticlassMetrics;
+import org.apache.spark.mllib.util.MLUtils;
 
 
-public class FeatureSelection {
+public class SupervisedLearning {
     public static void main(String[] args) {
-    	System.out.println("Feature-Selection");
-    	
-        SparkConf conf = new SparkConf().setAppName("PCA");
+        SparkConf conf = new SparkConf().setAppName("SupervisedLearning");
         SparkContext sc = new SparkContext(conf);
         JavaSparkContext jsc = JavaSparkContext.fromSparkContext(sc);
 
@@ -48,6 +51,7 @@ public class FeatureSelection {
         													 Double.parseDouble(attributes[3])));
         	}
         });
+        processedData.cache();
         
         System.out.println("######################################################");
         System.out.println("Printing JavaRDD<LabeledPoint> rowProcessed:");
@@ -58,21 +62,31 @@ public class FeatureSelection {
         }
         System.out.println("######################################################");
 
-        // reference: based on https://spark.apache.org/docs/2.4.0/mllib-feature-extraction.html#example-3
-        ChiSqSelector selector = new ChiSqSelector(3);
-        
-        ChiSqSelectorModel transformer = selector.fit(processedData.rdd());
-
-        JavaRDD<LabeledPoint> filteredData = processedData.map(lp ->
-        	new LabeledPoint(lp.label(), transformer.transform(lp.features())));
        
+        // reference: based on https://spark.apache.org/docs/2.4.0/ml-classification-regression.html#logistic-regression
+        // Split initial RDD into two... [60% training data, 40% testing data].
+        JavaRDD<LabeledPoint>[] splits = processedData.randomSplit(new double[] {0.6, 0.4}, 11L);
+        JavaRDD<LabeledPoint> training = splits[0].cache();
+        JavaRDD<LabeledPoint> test = splits[1];
+
+        
+     // Run training algorithm to build the model.
+        LogisticRegressionModel model = new LogisticRegressionWithLBFGS()
+          .setNumClasses(10)
+          .run(training.rdd());
+
+        // Compute raw scores on the test set.
+        JavaPairRDD<Object, Object> predictionAndLabels = test.mapToPair(p ->
+          new Tuple2<>(model.predict(p.features()), p.label()));
+
+        predictionAndLabels.saveAsTextFile("logistic_regression_result.txt");
+        
+        // Get evaluation metrics.
+        MulticlassMetrics metrics = new MulticlassMetrics(predictionAndLabels.rdd());
+        double accuracy = metrics.accuracy();
         System.out.println("######################################################");
-        System.out.println("Printing JavaRDD<LabeledPoint> filtedData:");
         System.out.println("------------------------------------------------------");
-        // print matrix
-        for (LabeledPoint rowFiltered : filteredData.collect()){
-        	System.out.println("rowProcessed: " + rowFiltered);
-        }
+        System.out.println("Accuracy = " + accuracy);
         System.out.println("######################################################");
     }
 }
