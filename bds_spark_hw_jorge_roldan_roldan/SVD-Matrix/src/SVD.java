@@ -73,7 +73,7 @@ public class SVD {
         // Create a RowMatrix from JavaRDD<Vector>.
         RowMatrix mat = new RowMatrix(rowsMatrix.rdd());
 
-        
+        // reference: based on Spark Session by  Alankrith Krishnan - Big Data Science - NYU - Spring 2021 
         // Compute the top 5 singular values and corresponding singular vectors.
         SingularValueDecomposition<RowMatrix, Matrix> svd = mat.computeSVD(5, true, 1.0E-9d);
         RowMatrix U = svd.U(); // The U factor is a RowMatrix.
