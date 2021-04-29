@@ -28,6 +28,32 @@ public class SupervisedLearning {
         JavaSparkContext jsc = JavaSparkContext.fromSparkContext(sc);
 
         JavaRDD<String> data = jsc.textFile(args[0], 1);
+
+        // reference: https://stackoverflow.com/questions/39530775/apache-spark-mllib-getting-labeledpoint-from-data-java
+        JavaRDD<LabeledPoint> processedData = data.map(new Function<String, LabeledPoint>(){
+        	public LabeledPoint call(String row) {
+        		String[] attributes = row.split(",");
+        		Double label;
+        		if (attributes[attributes.length - 1].contains("setosa")) label = 0.0; 
+        		else if (attributes[attributes.length - 1].contains("versicolor")) label = 1.0; 
+        		else if (attributes[attributes.length - 1].contains("virginica")) label = 2.0; 
+        		else label = 0.0;
+        		return new LabeledPoint(label, Vectors.dense(Double.parseDouble(attributes[0]), 
+        													 Double.parseDouble(attributes[1]), 
+        													 Double.parseDouble(attributes[2]), 
+        													 Double.parseDouble(attributes[3])));
+        	}
+        });
+        
+        System.out.println("######################################################");
+        System.out.println("Printing JavaRDD<LabeledPoint> rowProcessed:");
+        System.out.println("------------------------------------------------------");
+        // print matrix
+        for (LabeledPoint rowProcessed : processedData.collect()){
+        	System.out.println("rowProcessed: " + rowProcessed);
+        }
+        System.out.println("######################################################");
+
         
     }
 }
